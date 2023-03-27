@@ -1,0 +1,46 @@
+
+.coin-detail{
+  margin-top: 7rem;
+  padding: 3rem;
+  background-color: rgb(40,40,48);
+  border-radius: 2rem;
+}
+
+.coin-detail .head{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.coin-detail .head .name{
+  color: #fff;
+  font-size: 2rem;
+  margin: 0;
+}
+
+.coin-detail .head .info{
+  display: flex;
+  flex-direction: column;
+  color: rgb(116,114,125);
+  font-size: 0.9rem;
+}
+
+.coin-detail .head .info span{
+  display: block
+}
+
+.coin-detail .head .info .number {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.coin-detail .head .info.left .number {
+  color: rgb(108,153,94);
+}
+
+.coin-detail .head .info.left.minus .number {
+  color: rgb(143, 68, 68);
+}
+

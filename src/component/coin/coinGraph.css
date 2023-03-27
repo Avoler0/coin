@@ -1,0 +1,38 @@
+.coin-detail .graph-wrap {
+  position: relative;
+  height: 500px;
+  background-color: rgb(26, 31, 35);
+  border: 1px solid rgb(52, 49, 66);
+  border-radius: 2rem;
+}
+
+.coin-detail .graph-wrap .option {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background-color: rgb(40, 40, 48);
+  border-radius: 5px;
+}
+
+
+
+.coin-detail .graph-wrap .content{
+  margin: 0 auto;
+  
+}
+
+.chart{
+  z-index: 1;
+}
+
+.tick{
+  color: #fff;
+}
+
+.tick text {
+  font-weight: 700;
+}
+
+.tick line{
+  stroke: rgba(114, 104, 104, 0.26);
+}

@@ -1,5 +1,10 @@
 
-
+export interface upbit_market{
+  market:string,
+  korean_name:string,
+  english_name:string,
+  market_warning:string,
+}
 export interface upbit_candle_minute{
   candle_acc_trade_price:number
   candle_acc_trade_volume:number

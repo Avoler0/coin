@@ -10,7 +10,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 3rem;
 }
 
 .coin-detail .head .name{
@@ -23,7 +22,9 @@
   display: flex;
   flex-direction: column;
   color: rgb(116,114,125);
+  text-align: right;
   font-size: 0.9rem;
+  width: 20%;
 }
 
 .coin-detail .head .info span{
@@ -44,3 +45,28 @@
   color: rgb(143, 68, 68);
 }
 
+.coin-detail .graph-wrap{
+  position: relative;
+  width: 990px;
+  padding: 0;
+}
+.coin-detail .graph-wrap .chart-option{
+  position: absolute;
+  top: 20px;
+  left: 30px;
+}
+
+.coin-detail .graph-wrap .chart-option button{
+  color: #fff;
+  font-weight: 700;
+  border-color: #fff;
+  background-color: black;
+}
+.coin-detail .search-form{
+  color: #fff;
+  width: 150px;
+}
+
+.coin-detail .search-form input{
+  color: #fff;
+}

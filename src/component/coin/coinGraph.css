@@ -1,9 +1,5 @@
-.coin-detail .graph-wrap {
-  position: relative;
-  background-color: rgb(26, 31, 35);
-  border: 1px solid rgb(52, 49, 66);
-  border-radius: 2rem;
-}
+
+
 
 
 .chart{
@@ -18,7 +14,10 @@
   font-weight: 700;
 }
 
-.tick line{
+.yAxis .tick line{
   stroke: rgba(114, 104, 104, 0.26);
-  
+}
+
+.xAxis .tick line{
+  stroke: #fff;
 }

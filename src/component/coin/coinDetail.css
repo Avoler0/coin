@@ -1,4 +1,8 @@
 
+h2{
+  font-size: 1rem;
+}
+
 .coin-detail{
   margin-top: 7rem;
   padding: 3rem;
@@ -47,8 +51,9 @@
 
 .coin-detail .graph-wrap{
   position: relative;
-  width: 990px;
-  padding: 0;
+  
+  border: 1px solid rgb(52, 49, 66);
+  border-radius: 2rem;
 }
 .coin-detail .graph-wrap .chart-option{
   position: absolute;

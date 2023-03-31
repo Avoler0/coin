@@ -3,15 +3,13 @@ import React from 'react'
 import CoinGraph from './coinGraph';
 import upbitApi from '../../hook/upbit-api';
 import * as d3 from "d3";
-import { isNegative} from '../../hook/const';
-import CrossHair from './mouseCrossHair';
-import { Autocomplete, Box, Container, Grid, styled, TextField, Typography } from '@mui/material';
+import { isNegative, windowType, windowWidthType} from '../../hook/const';
+import { Container, createTheme, Grid, styled, TextField, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { upbit_market } from '../../types/upbit';
-import { AxiosResponse } from 'axios';
-import { Router, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 type Mouse = {
@@ -42,77 +40,80 @@ const InputTextField = styled(TextField)({
   }
   },
 });
-
+const GridItem = styled(Grid)(({ theme }) => ({
+  [theme.breakpoints.up('xs')]: {
+    xs:12
+  },
+  [theme.breakpoints.up('sm')]: {
+    xs:12
+  },
+  [theme.breakpoints.up('md')]: {
+    xs:12
+  }
+  
+}));
 function CoinDetail(){
-  const svgRef = React.useRef(null);
+  const desktop = useMediaQuery("(min-width:1400px)")
+  const tablet = useMediaQuery("(min-width:520px) and (max-width: 1400px)");
+  const mobile = useMediaQuery("(max-width: 520px)");
+
+  console.log(desktop,tablet,mobile)
   const [chartData,setChartData] = React.useState<any>(null);
   const [overData,setOverData] = React.useState<any>(null);
-  const [mouseCoods,setMouseCoords] = React.useState<Mouse>({x:0,y:0});
   const market = useSelector((state:any) => state.market)
   const [searchValue,setSearchValue] = React.useState('');
-  const [coinOption,setCoinOption] = React.useState('minute');
   const navigate = useNavigate();
   const location = useLocation();
-
-  const chartOption:any = {
-    width:990,
-    height:500,
-    margin:{
-      top:20,
-      right:55,
-      bottom:30,
-      left:60
+  const [windowSize,setWindowSize] = React.useState('desktop');
+  const gridOption:any = {
+    desktop:{
+      xs:12,
+    },
+    tablet:{
+      xs:12
+    },
+    mobile:{
+      xs:12
     }
   }
+  console.log(windowSize)
   React.useEffect(()=>{
-    upbitApi.candle(coinOption,location.pathname.split('/')[1],10)
+    upbitApi.candleAll(location.search.split('=')[1],5)
     .then((_res:any)=>{
-      const resData = _res.data.reverse();
-      setChartData(resData)
-      setOverData(resData[resData.length-1])
+      setChartData(_res)
+      setOverData(_res[0].data[0])
     })
-  },[location,coinOption])
 
+    setWindowSize(windowWidthType()!)
+  },[location])
+  
   if(!chartData) return <div></div>
-  // console.log(overData)
+
   const lastData = chartData[chartData.length - 1];
 
-  function mosueMoveInside(e:React.MouseEvent){
-    setMouseCoords({
-      x:
-        e.nativeEvent.offsetX,
-      y:
-        e.nativeEvent.y -
-        Math.round(e.currentTarget.getBoundingClientRect().top)
-    })
-  }
-
-  function mouseLeave(){
-    setMouseCoords({
-      x: 0,
-      y: 0
-    });
-  };
+  
   
   function searchSubmit(e:React.FormEvent){
     e.preventDefault();
-    console.log(searchValue)
     const result:any = market.filter((data:any)=> data.korean_name.includes(searchValue))
-    console.log(result)
+    
     if(result[0]){
-      navigate(`/${result[0].market}`)
+      navigate(`/coin?name=${result[0].market}`)
+    }else{
+      alert("관련 검색어가 없습니다.")
     }
   }
+  
   return(
     <div className='coin-detail'>
-      
       <div className='head'>
         <div>
           <h2 className='name'>
-            {lastData.market.split('-')[1]} / {lastData.market.split('-')[0]}
+            {location.search.split('=')[1]}
           </h2>
         </div>
         <div className='info left'>
+          <span>{overData && overData?.candle_date_time_kst}</span>
           <span>시가</span>
           <span className='number'>{overData ? overData?.opening_price.toLocaleString('ko-KR') : ''}</span>
         </div>
@@ -128,28 +129,40 @@ function CoinDetail(){
           <span>종가</span>
           <span className='number'>{overData ? overData.trade_price.toLocaleString('ko-KR') : ''}</span>
         </div>
-        
       </div>
       <form className='search-form'
         onSubmit={searchSubmit}
       >
-            <InputTextField
-              label="코인 검색"
-              variant="standard"
-              size="small"
-              margin='normal'
-              sx={{
-                ' .MuiOutlinedInput-root': {
-                    color: 'white',
-                      border: '1px solid red',
-                  },
-              }}
-              onChange={(event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setSearchValue(event.target.value)}
-            />
+        <InputTextField
+          label="코인 검색"
+          variant="standard"
+          size="small"
+          margin='normal'
+          sx={{
+            ' .MuiOutlinedInput-root': {
+                color: 'white',
+                  border: '1px solid red',
+              },
+          }}
+          onChange={(event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setSearchValue(event.target.value)}
+        />
       </form>
-
-      <Container maxWidth="lg" className='graph-wrap'>
-        <div className='chart-option'>
+      <Grid container className='graph-wrap' 
+        justifyContent="space-between"
+        >
+            {chartData.map((data:any,i:number) => {
+              return (
+                <GridItem item style={{height:600}} key={i}>
+                  <CoinGraph chartData={data.data} setOverData={setOverData} />
+                  
+                </GridItem>
+              )
+            })}
+      </Grid>
+      
+      
+      {/* <CrossHair mouseCoods={mouseCoods} overData={overData} chartOption={chartOption} /> */}
+      {/* <div className='chart-option'>
           <ButtonGroup size='small' color="secondary">
             <Button onClick={() => setCoinOption('minute')}>
               <span>M</span>
@@ -160,18 +173,15 @@ function CoinDetail(){
             <Button onClick={() => setCoinOption('weeks')}>
               <span>W</span>
             </Button>
+            <Button onClick={() => setCoinOption('month')}>
+              <span>M</span>
+            </Button>
           </ButtonGroup>
-        </div>
-        <svg ref={svgRef} onMouseMove={mosueMoveInside} onMouseLeave={mouseLeave}
-          viewBox="0,0,990,500"
-        >
-          <CoinGraph chartData={chartData} setOverData={setOverData} svgRef={svgRef} chartOption={chartOption}/>
-          <CrossHair mouseCoods={mouseCoods} overData={overData} chartOption={chartOption}/>
-        </svg>
-      </Container>
-      
+        </div> */}
     </div>
+    
   )
+  
 }
 
 

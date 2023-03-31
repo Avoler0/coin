@@ -7,63 +7,75 @@ import { isNegative } from '../../hook/const';
 //   width:number
 //   height:number
 // }
+import CrossHair from './mouseCrossHair';
 
 
-function CoinGraph({chartData,setOverData,svgRef,chartOption}){
-    const {width,height,margin} = chartOption;
+function CoinGraph({chartData,setOverData}){
+  const data = [...chartData].reverse();
+  const svgRef = React.useRef(null);
+  const [mouseCoods,setMouseCoords] = React.useState({x:0,y:0});
+  const [size,setSize] = React.useState({width:0,height:0});
+  const margin = {
+    top:20,
+    right:65,
+    bottom:30,
+    left:30
+  }
+  
+  useEffect(()=>{
+    const width = svgRef.current.clientWidth;
+    const height = svgRef.current.clientHeight;
+    setSize({width,height})
     const xRange = [margin.left,width - margin.right];
     const yRange = [height - margin.bottom, margin.top];
-    const xPadding = 0.2;
-    const xFormat = "%b %d";
-    const yFormat = "~f";
+    const xPadding = 0.1;
+    const xFormat = "%m-%d";
+    // coinOption === 'minute' ? "%I:%M" : 
+    const yAxisTickMargin = 25;
+    const xAxisDomainMargin = 40;
     const colors = ["#e41a1c", "#398bff"]
 
-    const X = d3.map(chartData,(data) => data.timestamp);
-    const Yo = d3.map(chartData, (data) => data.opening_price)
-    const Yc = d3.map(chartData, (data) => data.trade_price)
-    const Yh = d3.map(chartData, (data) => data.high_price)
-    const Yl = d3.map(chartData, (data) => data.low_price)
-
-    const weeks = (start, stop, stride) => d3.utcMonday.range(start, stop, 27);
+    const X = d3.map(data,(d) => d.timestamp);
+    const Yo = d3.map(data, (d) => d.opening_price)
+    const Yc = d3.map(data, (d) => d.trade_price)
+    const Yh = d3.map(data, (d) => d.high_price)
+    const Yl = d3.map(data, (d) => d.low_price)
 
     const yDomain = [d3.min(Yl)*0.95, d3.max(Yh)*1.05];
-    const xTicks = weeks(d3.min(X), d3.max(X), 1);
     const xScale = d3.scaleBand(X,xRange).padding(xPadding);
-    // const xScale = d3.scaleLinear().domain([d3.min(X), d3.max(X)]).range([0,width])
+
     const yScale = d3.scaleLinear(yDomain,yRange);
-    const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%y-%m-%d"));
-    const yAxis = d3.axisRight(yScale).ticks(height / 45).tickSize(width-margin.right);
+    const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat(xFormat));
+    const yAxis = d3.axisRight(yScale).ticks(height / 100,"~s").tickSize(width-margin.right+yAxisTickMargin);
 
     const svg = d3.select(svgRef.current);
-
-
+  
     svg.selectAll("g").remove()
 
     svg.append("g")
-      .attr("className","yAxis")
+      .attr("class","yAxis")
       .attr("transform", `translate(0,0)`)
       .call(yAxis)
       .call(g => g.select(".domain").remove())
       .call(g => g.selectAll(".tick line").clone()
           .attr("stroke-opacity", 0.2)
-          .attr("x2", width + margin.left - margin.right));
+          .attr("x2", width - margin.left - margin.right));
 
     svg.append("g")
+      .attr("class","xAxis")
       .attr("transform", `translate(0,${height - margin.bottom})`)
       .call(xAxis)
       .call(g => g.select(".domain").remove());
-
+    
     const g = svg.append("g")
-        .attr("className","chart")
+        .attr("class","chart")
         .attr("stroke", "currentColor")
         .attr("stroke-linecap", "round")
       .selectAll("g")
-      .data(chartData)
+      .data(data)
       .join("g")
         .on("mouseover",(d,i)=> setOverData(i))
-        .attr("transform", (a,i) => `translate(${xScale(X[i])},0)`)
-
-
+        .attr("transform", (a,i) => `translate(${xScale(X[i])+20},0)`)
 
     g.append("line")
       .attr("y1", (a,i) => yScale(Yl[i]))
@@ -73,11 +85,36 @@ function CoinGraph({chartData,setOverData,svgRef,chartOption}){
     g.append("line")
       .attr("y1", (a,i) => yScale(Yo[i]))
       .attr("y2", (a,i) => yScale(Yc[i])+1)
-      .attr("stroke-width", 68)
+      .attr("stroke-width", xScale.bandwidth())
       .attr("stroke-linecap","butt")
       .attr("stroke", (a,i) => colors[isNegative(Math.sign(Yo[i] - Yc[i]))]);
 
-  return <></>;
+  },[data])
+  function mosueMoveInside(e:React.MouseEvent){
+  setMouseCoords({
+    x:
+      e.nativeEvent.offsetX,
+    y:
+      e.nativeEvent.y -
+      Math.round(e.currentTarget.getBoundingClientRect().top)
+  })
+}
+
+function mouseLeave(){
+  setMouseCoords({
+    x: 0,
+    y: 0
+  });
+};
+  return (
+      <svg ref={svgRef} 
+        width="100%" height="100%"
+        onMouseMove={mosueMoveInside} onMouseLeave={mouseLeave}
+      >
+        
+        <CrossHair mouseCoods={mouseCoods} chartOption={size} />
+      </svg>
+  );
 }
 
 export default CoinGraph;

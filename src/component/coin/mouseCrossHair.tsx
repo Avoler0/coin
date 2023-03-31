@@ -7,11 +7,11 @@ type props = {
 }
 
 
-function CrossHair({mouseCoods,overData,chartOption}:props){
+function CrossHair({mouseCoods,chartOption}:props){
   const {width,height} = chartOption;
   
   if(mouseCoods.x === 0) return <></>;
-
+  
   return (
     <>
       <line

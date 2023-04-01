@@ -53,30 +53,16 @@ const GridItem = styled(Grid)(({ theme }) => ({
   
 }));
 function CoinDetail(){
-  const desktop = useMediaQuery("(min-width:1400px)")
-  const tablet = useMediaQuery("(min-width:520px) and (max-width: 1400px)");
-  const mobile = useMediaQuery("(max-width: 520px)");
+  const tablet = useMediaQuery("(min-width:521px) and (max-width: 1025px)");
+  const mobile = useMediaQuery("(max-width:520px)");
 
-  console.log(desktop,tablet,mobile)
   const [chartData,setChartData] = React.useState<any>(null);
   const [overData,setOverData] = React.useState<any>(null);
   const market = useSelector((state:any) => state.market)
   const [searchValue,setSearchValue] = React.useState('');
   const navigate = useNavigate();
   const location = useLocation();
-  const [windowSize,setWindowSize] = React.useState('desktop');
-  const gridOption:any = {
-    desktop:{
-      xs:12,
-    },
-    tablet:{
-      xs:12
-    },
-    mobile:{
-      xs:12
-    }
-  }
-  console.log(windowSize)
+
   React.useEffect(()=>{
     upbitApi.candleAll(location.search.split('=')[1],5)
     .then((_res:any)=>{
@@ -84,12 +70,10 @@ function CoinDetail(){
       setOverData(_res[0].data[0])
     })
 
-    setWindowSize(windowWidthType()!)
   },[location])
   
   if(!chartData) return <div></div>
 
-  const lastData = chartData[chartData.length - 1];
 
   
   
@@ -112,22 +96,23 @@ function CoinDetail(){
             {location.search.split('=')[1]}
           </h2>
         </div>
-        <div className='info left'>
-          <span>{overData && overData?.candle_date_time_kst}</span>
-          <span>시가</span>
-          <span className='number'>{overData ? overData?.opening_price.toLocaleString('ko-KR') : ''}</span>
-        </div>
-        <div className={`info left ${isNegative(overData.change_price) ? 'minus' : 'plus'}`}>
-          <span>고가</span>
-          <span className='number'>{overData ?  overData?.high_price.toLocaleString('ko-KR') : ''}</span>
-        </div>
-        <div className='info right'>
-          <span>저가</span>
-          <span className='number'>{overData ? overData.low_price.toLocaleString('ko-KR') : ''}</span>
-        </div>
-        <div className='info right'>
-          <span>종가</span>
-          <span className='number'>{overData ? overData.trade_price.toLocaleString('ko-KR') : ''}</span>
+        <div className='info'>
+          <div className='left'>
+            <span>시가</span>
+            <span className='number'>{overData ? overData?.opening_price.toLocaleString('ko-KR') : ''}</span>
+          </div>
+          <div className={`left ${isNegative(overData.change_price) ? 'minus' : 'plus'}`}>
+            <span>고가</span>
+            <span className='number'>{overData ?  overData?.high_price.toLocaleString('ko-KR') : ''}</span>
+          </div>
+          <div className={`right ${isNegative(overData.change_price) ? 'minus' : 'plus'}`}>
+            <span>저가</span>
+            <span className='number'>{overData ? overData.low_price.toLocaleString('ko-KR') : ''}</span>
+          </div>
+          <div className={`right ${isNegative(overData.change_price) ? 'minus' : 'plus'}`}>
+            <span>종가</span>
+            <span className='number'>{overData ? overData.trade_price.toLocaleString('ko-KR') : ''}</span>
+          </div>
         </div>
       </div>
       <form className='search-form'
@@ -152,7 +137,7 @@ function CoinDetail(){
         >
             {chartData.map((data:any,i:number) => {
               return (
-                <GridItem item style={{height:600}} key={i}>
+                <GridItem item style={{height:600}} key={i} xs={tablet ? 6 : mobile ? 12 : 3}>
                   <CoinGraph chartData={data.data} setOverData={setOverData} />
                   
                 </GridItem>

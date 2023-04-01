@@ -2,6 +2,23 @@
 
 .MuiBox-root .content {
   display: flex;
-  width: 1080px;
   margin: 0 auto;
+}
+
+@media screen and (max-width: 520px) {
+  .MuiBox-root .content {
+    width: 95%;
+  }
+}
+
+@media screen and (min-width:521px) and (max-width: 1025px) {
+  .MuiBox-root .content {
+    width: 95%;
+  }
+}
+
+@media screen and (min-width:1025px) {
+  .MuiBox-root .content {
+    width: 1360px;
+  }
 }

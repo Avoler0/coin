@@ -9,4 +9,4 @@
 ## 아키텍쳐
 
 ## 플로우 차트
-![flow](./image/readme/flowchart.png)
+![flow](./src/image/readme/flowchart.png)

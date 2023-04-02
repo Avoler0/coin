@@ -2,16 +2,17 @@ import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
+import './login.css'
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, makeStyles, ThemeProvider} from '@mui/material/styles';
+import NaverIco from '../../image/login/naver_icon.png'
+import KakaoImg from '../../image/login/kakaotalk_icon.png'
 
 function Copyright(props: any) {
   return (
@@ -29,6 +30,16 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function Login() {
+  const naverRef = React.useRef(null);
+  function initNaverOauth(){
+    const {naver_id_login} = window as any
+    const naver_login = new naver_id_login('NR61LLLoBLU2vcfbHvDY','http://localhost:3000/login')
+    const state = naver_login.getUniqState();
+    naver_login.setButton('green',3,55)
+    naver_login.setDomain('http://localhost:3000')
+    naver_login.setState(state);
+    naver_login?.init_naver_id_login();
+  }
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -37,7 +48,9 @@ export default function Login() {
       password: data.get('password'),
     });
   };
-
+  React.useEffect(()=>{
+    initNaverOauth();
+  },[])
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -57,17 +70,35 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 , textAlign: 'center'}}>
+            <div id='naver_id_login' ref={naverRef} /> 
             <Button
               variant="contained"
               fullWidth
-              sx={{ mt: 1, mb: 1 }}
-            >네이버 로그인</Button>
+              className='oauthBtn'
+              sx={{ mt: 1, mb: 1 , padding:0 , width: 300, height: 45, backgroundColor: '#03C75A', ":hover": {
+                bgcolor: "#03C75A",
+              }}}
+            >
+              <div className='btnContent naver'>
+                <img src={NaverIco} alt="naver"/>
+                <div className='text'>네이버 로그인</div>
+              </div>
+            </Button>
             <Button
               variant="contained"
               fullWidth
-              sx={{ mt: 1, mb: 1 }}
-            >카카오톡 로그인</Button>
+              className='oauthBtn'
+              sx={{ mt: 1, mb: 1 , padding:0, width: 300, height: 45, backgroundColor: '#FEE500', ":hover": {
+                bgcolor: "#FEE500",
+              }}}
+            >
+              <div className='btnContent kakao'>
+                <img src={KakaoImg} alt="kakao"/>
+                <div className='text'>카카오 로그인</div>
+              </div>
+                
+            </Button>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"

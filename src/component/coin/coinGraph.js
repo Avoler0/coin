@@ -2,12 +2,14 @@ import './coinGraph.css'
 import React, { useEffect } from 'react';
 import * as d3 from "d3";
 import { isNegative } from '../../hook/const';
+import CrossHair from './mouseCrossHair';
+
 // type props = {
 //   chartData:any
 //   width:number
 //   height:number
 // }
-import CrossHair from './mouseCrossHair';
+
 
 
 function CoinGraph({chartData,setOverData}){

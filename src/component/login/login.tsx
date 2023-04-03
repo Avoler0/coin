@@ -18,8 +18,8 @@ function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="/">
+        Coin Graph Site
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -30,7 +30,7 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function Login() {
-  const naverRef = React.useRef(null);
+  const naverRef = React.useRef<HTMLDivElement>(null);
   function initNaverOauth(){
     const {naver_id_login} = window as any
     const naver_login = new naver_id_login('NR61LLLoBLU2vcfbHvDY','http://localhost:3000/login')
@@ -40,17 +40,17 @@ export default function Login() {
     naver_login.setState(state);
     naver_login?.init_naver_id_login();
   }
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+
+  
   React.useEffect(()=>{
     initNaverOauth();
   },[])
+
+  function naverClick(){
+    const naver = naverRef.current && naverRef.current.children[0] as HTMLElement;
+
+    naver?.click();
+  }
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -70,7 +70,7 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 , textAlign: 'center'}}>
+          <Box component="form" noValidate sx={{ mt: 1 , textAlign: 'center'}}>
             <div id='naver_id_login' ref={naverRef} /> 
             <Button
               variant="contained"
@@ -80,7 +80,7 @@ export default function Login() {
                 bgcolor: "#03C75A",
               }}}
             >
-              <div className='btnContent naver'>
+              <div className='btnContent naver' onClick={naverClick}>
                 <img src={NaverIco} alt="naver"/>
                 <div className='text'>네이버 로그인</div>
               </div>

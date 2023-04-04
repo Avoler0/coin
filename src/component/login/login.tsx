@@ -38,7 +38,7 @@ export default function Login() {
 
   function initNaverOauth(){
     const {naver_id_login} = window as any
-    const naver_login = new naver_id_login('NR61LLLoBLU2vcfbHvDY','http://localhost:3000/oauth/naver')
+    const naver_login = new naver_id_login('MVyJw6uFVpXMPD8jKqy6','http://localhost:3000/oauth/naver')
     const state = naver_login.getUniqState();
     naver_login.setButton('green',3,55)
     naver_login.setDomain('http://localhost:3000')
@@ -104,12 +104,11 @@ export default function Login() {
                 </div>
                   
               </Button>
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
-              />
+              /> */}
             </Link>
-            
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

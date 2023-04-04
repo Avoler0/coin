@@ -4,10 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
-import store from './redux/store';
+import store, { persistore } from './redux/store';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 import { theme } from './muiTheme';
+import { PersistGate } from 'reduxjs-toolkit-persist/integration/react'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -17,7 +18,9 @@ root.render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <BrowserRouter>
-          <App />
+          <PersistGate loading={null} persistor={persistore}>
+            <App />
+          </PersistGate>
         </BrowserRouter>
       </Provider>
     </ThemeProvider>

@@ -2,6 +2,7 @@
 
 .MuiBox-root .content {
   display: flex;
+  justify-content: space-between;
   margin: 0 auto;
 }
 
@@ -21,4 +22,9 @@
   .MuiBox-root .content {
     width: 1360px;
   }
+}
+
+.user-info{
+  display: flex;
+  align-items: center;
 }

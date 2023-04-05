@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -15,7 +16,7 @@ function KakaoOuath(){
   const kakao_api_id = '37e4e6a736e29a81b00c93698d6549e3'
   async function kakaoOauthHandler(){
     const code = location.search.split('=')[1];
-    console.log(code)
+
     await axios.post(`https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${kakao_api_id}&redirect_uri=${redirect_url}&code=${code}`,{
         headers:{
           'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'

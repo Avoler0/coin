@@ -1,14 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './coinDetail.css'
 import React from 'react'
 import CoinGraph from './coinGraph';
 import upbitApi from '../../hook/upbit-api';
 import * as d3 from "d3";
-import { isNegative, windowType, windowWidthType} from '../../hook/const';
-import { Container, createTheme, Grid, styled, TextField, Typography } from '@mui/material';
+import { isNegative } from '../../hook/const';
+import { Box, Grid, styled, TextField, Typography, Modal } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 
@@ -55,7 +54,7 @@ const GridItem = styled(Grid)(({ theme }) => ({
 function CoinDetail(){
   const tablet = useMediaQuery("(min-width:521px) and (max-width: 1025px)");
   const mobile = useMediaQuery("(max-width:520px)");
-
+  const user = useSelector((state:any)=> state.user )
   const [chartData,setChartData] = React.useState<any>(null);
   const [overData,setOverData] = React.useState<any>(null);
   const market = useSelector((state:any) => state.market)
@@ -64,19 +63,20 @@ function CoinDetail(){
   const location = useLocation();
 
   React.useEffect(()=>{
+    if(!user.loginState){
+      alert('로그인 후 이용해주세요.')
+      window.location.href = "/account/login"
+    }
+
     upbitApi.candleAll(location.search.split('=')[1],5)
     .then((_res:any)=>{
       setChartData(_res)
       setOverData(_res[0].data[0])
     })
-
   },[location])
   
   if(!chartData) return <div></div>
 
-
-  
-  
   function searchSubmit(e:React.FormEvent){
     e.preventDefault();
     const result:any = market.filter((data:any)=> data.korean_name.includes(searchValue))
@@ -101,15 +101,15 @@ function CoinDetail(){
             <span>시가</span>
             <span className='number'>{overData ? overData?.opening_price.toLocaleString('ko-KR') : ''}</span>
           </div>
-          <div className={`left ${isNegative(overData.change_price) ? 'minus' : 'plus'}`}>
+          <div className={`left ${overData && isNegative(overData.change_price) ? 'minus' : 'plus'}`}>
             <span>고가</span>
             <span className='number'>{overData ?  overData?.high_price.toLocaleString('ko-KR') : ''}</span>
           </div>
-          <div className={`right ${isNegative(overData.change_price) ? 'minus' : 'plus'}`}>
+          <div className={`right ${overData && isNegative(overData.change_price) ? 'minus' : 'plus'}`}>
             <span>저가</span>
             <span className='number'>{overData ? overData.low_price.toLocaleString('ko-KR') : ''}</span>
           </div>
-          <div className={`right ${isNegative(overData.change_price) ? 'minus' : 'plus'}`}>
+          <div className={`right ${overData && isNegative(overData.change_price) ? 'minus' : 'plus'}`}>
             <span>종가</span>
             <span className='number'>{overData ? overData.trade_price.toLocaleString('ko-KR') : ''}</span>
           </div>
@@ -135,7 +135,7 @@ function CoinDetail(){
       <Grid container className='graph-wrap' 
         justifyContent="space-between"
         >
-            {chartData.map((data:any,i:number) => {
+            {chartData && chartData.map((data:any,i:number) => {
               return (
                 <GridItem item style={{height:600}} key={i} xs={tablet ? 6 : mobile ? 12 : 3}>
                   <CoinGraph chartData={data.data} setOverData={setOverData} />
@@ -144,25 +144,6 @@ function CoinDetail(){
               )
             })}
       </Grid>
-      
-      
-      {/* <CrossHair mouseCoods={mouseCoods} overData={overData} chartOption={chartOption} /> */}
-      {/* <div className='chart-option'>
-          <ButtonGroup size='small' color="secondary">
-            <Button onClick={() => setCoinOption('minute')}>
-              <span>M</span>
-            </Button>
-            <Button onClick={() => setCoinOption('days')}>
-              <span>D</span>
-            </Button>
-            <Button onClick={() => setCoinOption('weeks')}>
-              <span>W</span>
-            </Button>
-            <Button onClick={() => setCoinOption('month')}>
-              <span>M</span>
-            </Button>
-          </ButtonGroup>
-        </div> */}
     </div>
     
   )

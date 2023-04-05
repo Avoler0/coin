@@ -7,6 +7,6 @@
 - Redux
 
 ## 아키텍쳐
-
+![architecture](./src/image/readme/architecture.png)
 ## 플로우 차트
 ![flow](./src/image/readme/flowchart.png)

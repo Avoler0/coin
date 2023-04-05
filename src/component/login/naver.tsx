@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -29,7 +30,7 @@ function NaverOuath(){
 
   useEffect(()=>{
     naverOauthHandler()
-  })
+  },[])
 
   return <div style={{color:'#fff'}}>잠시만 기다려주세요. 네이버 Oauth 로그인 중 입니다.</div>
 }

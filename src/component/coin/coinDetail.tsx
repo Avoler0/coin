@@ -107,7 +107,7 @@ function CoinDetail(){
   return(
     <div className='coin-detail'>
       <div className='head-wrap'>
-        <div className={`head ${scroll ? 'scroll' : null}`}>
+        <div className={`head ${scroll && 'scroll'}`}>
           <div>
             <h2 className='name'>
               {location.search.split('=')[1]}
